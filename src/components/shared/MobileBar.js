@@ -27,6 +27,7 @@ import SportsBasketballRoundedIcon from "@mui/icons-material/SportsBasketballRou
 import TheaterComedyRoundedIcon from "@mui/icons-material/TheaterComedyRounded";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import PersonAddAltRoundedIcon from "@mui/icons-material/PersonAddAltRounded";
+import { useNavbarItems } from "./Navbar";
 // style
 const MobileButtonLink = styled.a`
 	width: 100%;
@@ -62,78 +63,7 @@ export default function SwipeBar({ open, setOpen }) {
 		setOpen(!open);
 	};
 
-	const musicMenu = [
-		{
-			label: "Home",
-			link: "/music",
-		},
-		{
-			label: "Reggaeton",
-			link: "/music/raggTicket/",
-		},
-		{
-			label: "Rock",
-			link: "/music/rockTicket/",
-		},
-		{
-			label: "Pop",
-			link: "/music/popTicket/",
-		},
-		{
-			label: "Salsa",
-			link: "/music/salsaTicket/",
-		},
-	];
-
-	const sportMenu = [
-		{
-			label: "Home",
-			link: "/sports",
-		},
-		{
-			label: "Basketball",
-			link: "/sports/basketballTicket/",
-		},
-		{
-			label: "Baseball",
-			link: "/sports/baseballTicket/",
-		},
-		{
-			label: "Soccer",
-			link: "/sports/soccerTicket/",
-		},
-		{
-			label: "WWE",
-			link: "/sports/wweTicket/",
-		},
-	];
-
-	const comedyMenu = [
-		{
-			label: "Home",
-			link: "/more",
-		},
-		{
-			label: "Comedy",
-			link: "/more/comedyTicket/",
-		},
-		{
-			label: "Festival",
-			link: "/more/festivalTicket/",
-		},
-		{
-			label: "Theatre",
-			link: "/more/theatreTicket/",
-		},
-		{
-			label: "Other Events",
-			link: "/more",
-		},
-		{
-			label: "Museums",
-			link: "/more",
-		},
-	];
+	const { navbarItems, loading, error , moreItems , status } = useNavbarItems();
 
 	return (
 		<SwipeableDrawer
@@ -174,100 +104,64 @@ export default function SwipeBar({ open, setOpen }) {
 						</MobileButton>
 					</MobileButtonLink>
 				</ListItem>
-				<Divider />
+				<Divider /> 
 
 				{/* music Menu */}
-				<ListItem
-					sx={{
-						padding: ".2rem",
-					}}
-				>
-					<Accordion
-						square={true}
-						// disableGutters
-						sx={{
-							border: "none",
-							width: "100%",
-							outline: "none",
-							boxShadow: "none",
-						}}
-					>
-						<AccordionSummary
-							expandIcon={<ExpandMoreIcon />}
-							aria-controls='panel1a-content'
-							id='panel1a-header'
-						>
-							<Typography
-								sx={{
-									fontFamily: "Montserrat",
-									fontWeight: "500",
-									display: "flex",
-									alignItems: "center",
-									gap: "0.8rem",
-								}}
-							>
-								<GraphicEqRoundedIcon sx={{ color: "var(--purpleColor)", fontSize: "1.5rem" }} />
-								Music
-							</Typography>
-						</AccordionSummary>
-						<AccordionDetails>
-							{musicMenu.map((item, index) => (
-								<Link href={item.link} key={index}>
-									<MobileButton onClick={drawerHandlerClose}>{item.label}</MobileButton>
-								</Link>
-							))}
-						</AccordionDetails>
-					</Accordion>
-				</ListItem>
-				<Divider />
+				{
+  status === 'succeeded' && 
+  navbarItems.map((item, idx) => (
+    <>
+      <ListItem
+        sx={{
+          padding: ".2rem",
+        }}
+      >
+        <Accordion
+          square={true}
+          sx={{
+            border: "none",
+            width: "100%",
+            outline: "none",
+            boxShadow: "none",
+          }}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls={`panel${idx + 1}a-content`}
+            id={`panel${idx + 1}a-header`}
+          >
+            <Typography
+              sx={{
+                fontFamily: "Montserrat",
+                fontWeight: "500",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.8rem",
+              }}
+            >
+              <GraphicEqRoundedIcon sx={{ color: "var(--purpleColor)", fontSize: "1.5rem" }} />
+              {Object.keys(item)[0]}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            {Object.values(item)[0].map((subItem, index) => (
+              <Link href={subItem.link} key={index}>
+                <MobileButton onClick={drawerHandlerClose}>{subItem.title}</MobileButton>
+              </Link>
+            ))}
+          </AccordionDetails>
+        </Accordion>
+      </ListItem>
+      <Divider />
+    </>
+  ))
+}
 
-				{/* sport Menu */}
-				<ListItem
-					sx={{
-						padding: ".2rem",
-					}}
-				>
-					<Accordion
-						square={true}
-						// disableGutters
-						sx={{
-							border: "none",
-							width: "100%",
-							outline: "none",
-							boxShadow: "none",
-						}}
-					>
-						<AccordionSummary
-							expandIcon={<ExpandMoreIcon />}
-							aria-controls='panel1a-content'
-							id='panel1a-header'
-						>
-							<Typography
-								sx={{
-									fontFamily: "Montserrat",
-									fontWeight: "500",
-									display: "flex",
-									alignItems: "center",
-									gap: "0.8rem",
-								}}
-							>
-								<SportsBasketballRoundedIcon sx={{ color: "var(--purpleColor)", fontSize: "1.5rem" }} />
-								Sports
-							</Typography>
-						</AccordionSummary>
-						<AccordionDetails>
-							{sportMenu.map((item, index) => (
-								<Link href={item.link} key={index}>
-									<MobileButton onClick={drawerHandlerClose}>{item.label}</MobileButton>
-								</Link>
-							))}
-						</AccordionDetails>
-					</Accordion>
-				</ListItem>
-				<Divider />
 
 				{/* more Menu */}
-				<ListItem
+				{
+					moreItems.length > 0 && <>
+					 <ListItem
 					sx={{
 						padding: ".2rem",
 					}}
@@ -308,8 +202,10 @@ export default function SwipeBar({ open, setOpen }) {
 							))}
 						</AccordionDetails>
 					</Accordion>
-				</ListItem>
+				</ListItem> 
 				<Divider />
+					</>
+				}
 
 				{/* Login  */}
 				<ListItem>

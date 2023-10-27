@@ -320,7 +320,7 @@ console.log({navbarItems , moreItems})
 							<ImageWrapper>
 								<div>
 									<LogoImage
-										src={navLightTheme ? "/logo.png" : "/logoBlack.png"}
+										src={navLightTheme ? "/Logo.png" : "/logoBlack.png"}
 										alt='Boletaso'
 										loading='lazy'
 										height='auto'
@@ -368,55 +368,40 @@ console.log({navbarItems , moreItems})
 					</LogoWrapper>
 
 					<TabWrapper>
-			{
-							status ==='succeeded' && <>
-							
-							<TabBox>
-							<Link href={'/sample'}>
-								<Button
-									id='tab-no1'
-									aria-controls={openTabNo1 ? "music-menu" : undefined}
-									aria-haspopup='true'
-									aria-expanded={openTabNo1 ? "true" : undefined}
-									onMouseOver={handleClick(setAnchorElTabNo1)}
-									sx={{
-										color: navLightTheme ? "#fff" : "#000",
-										textTransform: "none",
-										fontFamily: "Poppins",
-										fontWeight: navLightTheme ? "300" : "400",
-										letterSpacing: ".5px",
-									}}
-								>
-									{Object.keys(navbarItems[0])[0]}
-									<ArrowDropDownIcon sx={{ fontSize: "1.2rem" }} />
-								</Button>
-							</Link>
-						</TabBox>
+					{
+  status === 'succeeded' && 
+  <>
+    {['TabNo1', 'TabNo2'].map((tab, idx) => {
+      const openTab = tab === 'TabNo1' ? openTabNo1 : openTabNo2;
+      const setAnchorEl = tab === 'TabNo1' ? setAnchorElTabNo1 : setAnchorElTabNo2;
 
-						<TabBox>
-							<Link href={'/sample'}>
-								<Button
-									id='tab-no2'
-									
-									aria-haspopup='true'
-									aria-expanded={openTabNo2 ? "true" : undefined}
-									onMouseOver={handleClick(setAnchorElTabNo2)}
-									sx={{
-										color: navLightTheme ? "#fff" : "#000",
-										textTransform: "none",
-										fontFamily: "Poppins",
-										fontWeight: navLightTheme ? "300" : "400",
-										letterSpacing: ".5px",
-									}}
-								>
-									{Object.keys(navbarItems[1])[0]}
-									<ArrowDropDownIcon sx={{ fontSize: "1.2rem" }} />
-								</Button>
-							</Link>
-						</TabBox>
-							</>
-						}
-						
+      return (
+        <TabBox key={idx}>
+          <Link href={'/sample'}>
+            <Button
+              id={`tab-no${idx + 1}`}
+              aria-controls={openTab ? "music-menu" : undefined}
+              aria-haspopup='true'
+              aria-expanded={openTab ? "true" : undefined}
+              onMouseOver={handleClick(setAnchorEl)}
+              sx={{
+                color: navLightTheme ? "#fff" : "#000",
+                textTransform: "none",
+                fontFamily: "Poppins",
+                fontWeight: navLightTheme ? "300" : "400",
+                letterSpacing: ".5px",
+              }}
+            >
+              {Object.keys(navbarItems[idx])[0]}
+              <ArrowDropDownIcon sx={{ fontSize: "1.2rem" }} />
+            </Button>
+          </Link>
+        </TabBox>
+      )
+    })}
+  </>
+}
+
 						
 
 					{moreItems.length > 0 &&  <TabBox>
@@ -550,89 +535,61 @@ console.log({navbarItems , moreItems})
 					))}
 				</Menu>
 
-			 {
-					status ==='succeeded' &&  <>
-					
-					<Menu
-					hideBackdrop
-					id='music-menu'
-					anchorEl={anchorElTabNo1}
-					open={openTabNo1}
-					// onClose={handleClose(setAnchorElMusic)}
-					MenuListProps={{
-						"aria-labelledby": "music-button",
-						onMouseLeave: handleClose(setAnchorElTabNo1),
-					}}
-					sx={{
-						"& .MuiPaper-root": {
-							backgroundColor: "#464646",
-							width: 180,
-						},
-					}}
-					disableScrollLock={true}
-				>
-					{Object.values(navbarItems[0])[0].map((item, index) => (
-						<Link href={item.link} key={index}>
-							<MenuItem
-								sx={{
-									color: "#fff",
-									fontFamily: "Poppins",
-									padding: "0.7rem 1rem 0.3rem 1rem",
-									display: "flex",
-									justifyContent: "center",
-									flexDirection: "column",
-								}}
-								onClick={handleClose(setAnchorElTabNo1)}
-							>
-								{item.title}
-								{item.addDivider && (
-									<Divider sx={{ backgroundColor: "#fff", width: "90%", margin: "auto", mt: 2 }} />
-								)}
-							</MenuItem>
-						</Link>
-					))}
-				</Menu>
+				{
+  status === 'succeeded' && 
+  <>
+    {['TabNo1', 'TabNo2'].map((tab, idx) => {
+      const anchorEl = tab === 'TabNo1' ? anchorElTabNo1 : anchorElTabNo2;
+      const setAnchorEl = tab === 'TabNo1' ? setAnchorElTabNo1 : setAnchorElTabNo2;
 
-				<Menu
-					hideBackdrop
-					id='music-menu'
-					anchorEl={anchorElTabNo2}
-					open={openTabNo2}
-					// onClose={handleClose(setAnchorElMusic)}
-					MenuListProps={{
-						"aria-labelledby": "music-button",
-						onMouseLeave: handleClose(setAnchorElTabNo2),
-					}}
-					sx={{
-						"& .MuiPaper-root": {
-							backgroundColor: "#464646",
-							width: 180,
-						},
-					}}
-					disableScrollLock={true}
-				>
-					{Object.values(navbarItems[1])[0].map((item, index) => (
-						<Link href={item.link} key={index}>
-							<MenuItem
-								sx={{
-									color: "#fff",
-									fontFamily: "Poppins",
-									padding: "0.7rem 1rem 0.3rem 1rem",
-									display: "flex",
-									justifyContent: "center",
-									flexDirection: "column",
-								}}
-								onClick={handleClose(setAnchorElTabNo2)}
-							>
-								{item.title}
-								{item.addDivider && (
-									<Divider sx={{ backgroundColor: "#fff", width: "90%", margin: "auto", mt: 2 }} />
-								)}
-							</MenuItem>
-						</Link>
-					))}
-				</Menu></>
-				} 
+	  
+      const openTab = tab === 'TabNo1' ? openTabNo1 : openTabNo2;
+console.log(anchorEl)
+      return (
+        <Menu
+          hideBackdrop
+          id={`${tab.toLowerCase()}-menu`}
+          anchorEl={anchorEl}
+          open={openTab}
+		  key={idx}
+          MenuListProps={{
+            "aria-labelledby": "music-button",
+            onMouseLeave: handleClose(setAnchorEl),
+          }}
+          sx={{
+            "& .MuiPaper-root": {
+              backgroundColor: "#464646",
+              width: 180,
+            },
+          }}
+          disableScrollLock={true}
+        >
+          {Object.values(navbarItems[idx])[0].map((item, index) => (
+            <Link href={item.link} key={index}>
+              <MenuItem
+                sx={{
+                  color: "#fff",
+                  fontFamily: "Poppins",
+                  padding: "0.7rem 1rem 0.3rem 1rem",
+                  display: "flex",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                }}
+                onClick={handleClose(setAnchorEl)}
+              >
+                {item.title}
+                {item.addDivider && (
+                  <Divider sx={{ backgroundColor: "#fff", width: "90%", margin: "auto", mt: 2 }} />
+                )}
+              </MenuItem>
+            </Link>
+          ))}
+        </Menu>
+      )
+    })}
+  </>
+}
+
 
 				
 			{

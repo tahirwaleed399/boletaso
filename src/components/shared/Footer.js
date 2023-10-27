@@ -265,7 +265,7 @@ export default function Footer() {
 					<Grid item xs={12} sm={5} md={5}>
 						<LogoWrapper>
 							<LogoBox>
-								<LogoImage src='/logo.png' alt='Boletaso' height='auto' width='auto' loading='lazy' />
+								<LogoImage src='/Logo.png' alt='Boletaso' height='auto' width='auto' loading='lazy' />
 							</LogoBox>
 							<TextBox>
 								<Description>
