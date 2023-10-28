@@ -78,17 +78,14 @@ console.log({eventsData , categoriesData , subCategoriesData})
 				/>
 				}
 				{/* Concert Slider */}
-				<SliderWithTextAndPrice
-					sliderHeader='Concerts'
-					sliderData={homeConcertSliderData}
-					sliderRef='homeConcertSlider'
-				/>
-				{/* Comedy Slider */}
-				<SliderWithTextAndPrice
-					sliderHeader='Comedy'
-					sliderData={homeComedySliderData}
-					sliderRef='homeComedySlider'
-				/>
+				{
+	eventDataSuccess&& <SliderWithTextAndPrice
+	sliderHeader='Concerts'
+	sliderData={eventsData.events}	sliderRef='homeConcertSlider'
+/>
+}
+				
+				
 			</Main>
 		</>
 	);

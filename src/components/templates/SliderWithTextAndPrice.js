@@ -177,7 +177,7 @@ export default function SliderWithTextAndPrice({ idTag, sliderHeader, sliderData
 	// slider settings
 	var settings = {
 		dots: true,
-		infinite: true,
+		infinite: false,
 		arrows: false,
 		speed: 500,
 		slidesToShow: 3,
@@ -223,8 +223,8 @@ export default function SliderWithTextAndPrice({ idTag, sliderHeader, sliderData
 								<SliderBox>
 									<SliderImageBox>
 										<SliderImage
-											src={item.image}
-											alt={item.title}
+											src={item.image_1}
+											alt={item.description}
 											height='auto'
 											width='auto'
 											loading='lazy'
@@ -232,10 +232,10 @@ export default function SliderWithTextAndPrice({ idTag, sliderHeader, sliderData
 									</SliderImageBox>
 									<SliderTextBox>
 										<SliderTextSplitBox>
-											<SliderTitle>{item.title}</SliderTitle>
-											<SliderPrice>{item.price}</SliderPrice>
+											<SliderTitle>{item.description}</SliderTitle>
+											<SliderPrice>{14}$</SliderPrice>
 										</SliderTextSplitBox>
-										<SliderDetails>{item.detail}</SliderDetails>
+										<SliderDetails>{item.description}</SliderDetails>
 									</SliderTextBox>
 								</SliderBox>
 							</SliderWrapper>

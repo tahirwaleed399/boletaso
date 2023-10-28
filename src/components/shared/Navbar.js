@@ -16,8 +16,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 
 import { popoverClasses } from "@mui/material/Popover";
-import { useSelector } from "react-redux";
-import { selectUser } from "@/Redux/Slices/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { resetState, selectUser } from "@/Redux/Slices/authSlice";
 import { selectSubCategoriesByCategoryId } from "@/Redux/Slices/categoriesSlice";
 
 // styles
@@ -159,6 +159,7 @@ const user =  useSelector(selectUser)
 	const openCurrency = Boolean(anchorElCurrency);
 	const openTabNo1 = Boolean(anchorElTabNo1);
 	const openTabNo2 = Boolean(anchorElTabNo2);
+	const dispatch = useDispatch();
 	const openMore = Boolean(anchorElMore);
 	const { navbarItems, loading, error , moreItems , status } = useNavbarItems();
 	const handleClick = (stateName) => (event) => {
@@ -168,6 +169,10 @@ const user =  useSelector(selectUser)
 	const handleClose = (stateName) => () => {
 		stateName(null);
 	};
+
+	function logout(){
+		dispatch(resetState());
+	}
 useEffect(()=>{
 console.log({navbarItems , moreItems})
 },[loading , error , navbarItems , moreItems])
@@ -466,9 +471,10 @@ console.log({navbarItems , moreItems})
 							<CtaBox>
 							<CtaButton
 								lightcolor={navLightTheme ? "light" : "dark"}
+								onClick={logout}
 								
 							>
-								Dashboard
+								Log out
 							</CtaButton>
 						</CtaBox>
 							

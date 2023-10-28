@@ -28,6 +28,8 @@ import TheaterComedyRoundedIcon from "@mui/icons-material/TheaterComedyRounded";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import PersonAddAltRoundedIcon from "@mui/icons-material/PersonAddAltRounded";
 import { useNavbarItems } from "./Navbar";
+import { useDispatch, useSelector } from "react-redux";
+import { resetState, selectUser } from "@/Redux/Slices/authSlice";
 // style
 const MobileButtonLink = styled.a`
 	width: 100%;
@@ -55,7 +57,15 @@ const MobileButton = styled.button`
 	cursor: pointer;
 `;
 
+
+
 export default function SwipeBar({ open, setOpen }) {
+	const user =  useSelector(selectUser)
+	
+	const dispatch = useDispatch();
+	function handlelogout(){
+		dispatch(resetState());
+	}
 	const { openSignInPopUp, setOpenSignInPopUp, openLoginPopUp, setOpenLoginPopUp } = useContext(StateContext);
 
 	// Drawer Handler for Tablet and Mobile device
@@ -206,24 +216,39 @@ export default function SwipeBar({ open, setOpen }) {
 				<Divider />
 					</>
 				}
+{
+	user && <>
+	<ListItem>
+						<MobileButton onClick={handlelogout}>
+							<AccountCircleRoundedIcon sx={{ color: "var(--purpleColor)", fontSize: "1.5rem" }} />
+							Logout
+						</MobileButton>
+					</ListItem>
+					<Divider />
+	
+	</>
 
-				{/* Login  */}
-				<ListItem>
-					<MobileButton onClick={setOpenLoginPopUp}>
-						<AccountCircleRoundedIcon sx={{ color: "var(--purpleColor)", fontSize: "1.5rem" }} />
-						Login
-					</MobileButton>
-				</ListItem>
-				<Divider />
-
-				{/* Get Started  */}
-				<ListItem>
-					<MobileButton onClick={setOpenLoginPopUp}>
-						<PersonAddAltRoundedIcon sx={{ color: "var(--purpleColor)", fontSize: "1.5rem" }} />
-						Get Started
-					</MobileButton>
-				</ListItem>
-				<Divider />
+}
+				{
+					!user && 
+				<>
+					<ListItem>
+						<MobileButton onClick={setOpenLoginPopUp}>
+							<AccountCircleRoundedIcon sx={{ color: "var(--purpleColor)", fontSize: "1.5rem" }} />
+							Login
+						</MobileButton>
+					</ListItem>
+					<Divider />
+	
+					{/* Get Started  */}
+					<ListItem>
+						<MobileButton onClick={setOpenLoginPopUp}>
+							<PersonAddAltRoundedIcon sx={{ color: "var(--purpleColor)", fontSize: "1.5rem" }} />
+							Get Started
+						</MobileButton>
+					</ListItem>
+					<Divider /></>
+				}
 			</List>
 
 			<SignInPopUp openSignInPopUp={openSignInPopUp} setOpenSignInPopUp={setOpenSignInPopUp} />
