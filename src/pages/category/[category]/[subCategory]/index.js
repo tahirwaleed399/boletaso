@@ -16,6 +16,7 @@ import { RaggTrendingData, RaggCategoryData } from "@/components/json/MusicData"
 import { avatarMoreData } from "@/components/json/AvatarData";
 import { raggEventData } from "@/components/json/EventData";
 import { useGetEventQuery } from "@/Redux/RtkQuery/GeneralQueries";
+import { useRouter } from "next/router";
 
 // styles
 const Container = styled.section`
@@ -47,7 +48,7 @@ const PerformerContainer = styled.div``;
 
 export default function RaggaeTicket() {
 	const {data  , isLoading , isSuccess} = useGetEventQuery();
-	
+	const router = useRouter()
 	return ( 
 		<>
 			<Head>
@@ -60,7 +61,7 @@ export default function RaggaeTicket() {
 			<main>
 				{/* Hero Page */}
 				<PageTicketHero
-					header='Pop Tickets'
+					header={router.query.subCategory.toLocaleUpperCase()}
 					description='Popular music, better known as “pop,” traces its roots back to the 1950s in both the United States and the United Kingdom. Most pop songs are known for repetitive, catchy lyrics that are easy to both sing and dance along too.'
 					image='/images/musicPage/banner/Pop.png'
 				/>

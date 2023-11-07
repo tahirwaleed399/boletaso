@@ -17,6 +17,7 @@ import {
 	popConcertSliderData,
 	rockConcertSliderData,
 } from "../../../components/json/sliderData";
+import { useRouter } from "next/router";
 
 // style
 const Main = styled.main`
@@ -24,6 +25,7 @@ const Main = styled.main`
 `;
 
 export default function Home() {
+	const router = useRouter()
 	return (
 		<>
 			<Head>
@@ -35,7 +37,7 @@ export default function Home() {
 			<Main>
 				{/* Hero */}
 				<HeroWithButton
-					header='Concert Ticket'
+					header={router.query.category}
 					image='/images/banner/musicMain.png'
 					description1='Tickets to your favorite concerts.'
 					description2='All right here. Let&#39;s go.'
