@@ -61,7 +61,7 @@ export default function RaggaeTicket() {
 			<main>
 				{/* Hero Page */}
 				<PageTicketHero
-					header={router.query.subCategory.toLocaleUpperCase()}
+					header={router.query.subCategory}
 					description='Popular music, better known as “pop,” traces its roots back to the 1950s in both the United States and the United Kingdom. Most pop songs are known for repetitive, catchy lyrics that are easy to both sing and dance along too.'
 					image='/images/musicPage/banner/Pop.png'
 				/>
