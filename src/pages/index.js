@@ -72,7 +72,7 @@ console.log({eventsData , categoriesData , subCategoriesData})
 				{/* ImageSlider No Detail */}
 				{
 					subCategoriesDataSuccess && <ImageSliderNoDetail
-					sliderHeader='Popular MLB Teams'
+					sliderHeader='Sub Categories'
 					sliderData={subCategoriesData.sub_categories}
 					sliderRef='homePopularSlider'
 				/>
@@ -80,7 +80,7 @@ console.log({eventsData , categoriesData , subCategoriesData})
 				{/* Concert Slider */}
 				{
 	eventDataSuccess&& <SliderWithTextAndPrice
-	sliderHeader='Concerts'
+	sliderHeader='Events'
 	sliderData={eventsData.events}	sliderRef='homeConcertSlider'
 />
 }

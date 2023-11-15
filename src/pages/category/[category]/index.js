@@ -18,6 +18,9 @@ import {
 	rockConcertSliderData,
 } from "../../../components/json/sliderData";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
+import { selectAllSubCategories, selectCategoryByName, selectSubCategoriesByCategoryId } from "@/Redux/Slices/categoriesSlice";
+import { useGetEventsByCategoryQuery, useGetEventsBySubCategoryQuery } from "@/Redux/RtkQuery/GeneralQueries";
 
 // style
 const Main = styled.main`
@@ -25,7 +28,12 @@ const Main = styled.main`
 `;
 
 export default function Home() {
+
 	const router = useRouter()
+	const category = useSelector(state => selectCategoryByName(state, router.query.category ?? ''));
+	const subCategories = useSelector(state => selectSubCategoriesByCategoryId(state, category ?  category.id : ''));
+	const {data : events , isSuccess} = useGetEventsByCategoryQuery({categoryId :  category ? category.id :''});
+
 	return (
 		<>
 			<Head>
@@ -35,51 +43,62 @@ export default function Home() {
 				<link rel='icon' href='/favicon.ico' />
 			</Head>
 			<Main>
+				
+		
 				{/* Hero */}
-				<HeroWithButton
-					header={router.query.category}
+				{
+					category && <HeroWithButton
+					header={category.name}
 					image='/images/banner/musicMain.png'
-					description1='Tickets to your favorite concerts.'
-					description2='All right here. Let&#39;s go.'
+					description1={category.description}
 				/>
+				}
 				{/* Trending Slider */}
-				<TrendingSlider
+				{isSuccess &&
+					<TrendingSlider
 					sliderHeader='Trending Events near you'
-					sliderData={musicTrendingSliderData}
+					sliderData={events.events}
 					sliderRef='musicTrendSlider'
 				/>
+				}
 				{/* Browse Location DropDown Menu */}
 				<BrowseDropdown />
 				{/* Category Slider */}
-				<CategorySlider
-					sliderHeader='Categories'
-					sliderData={musicCategorySliderData}
+				{subCategories && <CategorySlider
+					sliderHeader='Sub Categories'
+					sliderData={subCategories}
 					sliderRef='musicCategoriesSlider'
-				/>
+				/>}
 
 				{/* Reggaeton Slider */}
-				<SliderWithTextAndPrice
-					idTag='musicReggaeton'
-					sliderHeader='Reggaeton'
-					sliderData={regConcertSliderData}
-					sliderRef='musicConcertSlider'
-				/>
-				{/* Rock Slider */}
-				<SliderWithTextAndPrice
-					idTag='musicRock'
-					sliderHeader='Rock'
-					sliderData={rockConcertSliderData}
-					sliderRef='musicComedySlider'
-				/>
-
-				{/* Pop Slider */}
-				<SliderWithTextAndPrice
-					idTag='musicPop'
-					sliderHeader='Pop'
-					sliderData={popConcertSliderData}
-					sliderRef='musicComedySlider'
-				/>
+				{
+					subCategories && subCategories.map((subCategory , index)=>{
+						return <SubCategoriesEvents subCategory={subCategory} key={index}></SubCategoriesEvents>
+					})
+				}
+				
 			</Main>
 		</>
 	);
+}
+
+
+function SubCategoriesEvents({subCategory}){
+const {data , isLoading , isSuccess} = useGetEventsBySubCategoryQuery({subCategoryId : subCategory.id})
+
+	return (<>
+	{
+		isSuccess && data.events.length > 0 &&<>
+
+<SliderWithTextAndPrice
+		idTag='musicReggaeton'
+		sliderHeader={subCategory.name}
+		sliderData={data.events}
+		sliderRef='musicConcertSlider'
+	/>
+		</>
+	}
+	
+	</>)
+
 }

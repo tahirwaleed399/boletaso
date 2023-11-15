@@ -204,13 +204,13 @@ export default function SwipeBar({ open, setOpen }) {
 								More
 							</Typography>
 						</AccordionSummary>
-						<AccordionDetails>
+						{/* <AccordionDetails>
 							{comedyMenu.map((item, index) => (
 								<Link href={item.link} key={index}>
 									<MobileButton onClick={drawerHandlerClose}>{item.label}</MobileButton>
 								</Link>
 							))}
-						</AccordionDetails>
+						</AccordionDetails> */}
 					</Accordion>
 				</ListItem> 
 				<Divider />

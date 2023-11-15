@@ -1,9 +1,9 @@
 // redux/store.js
 import { configureStore } from '@reduxjs/toolkit';
-import authReducer from './Slices/authSlice';
+import authReducer, { fetchUser } from './Slices/authSlice';
 import categoriesReducer, { fetchCategories, fetchSubCategories } from './Slices/categoriesSlice';
 
-import geographyReducer, { fetchCities, fetchCountries, fetchStates } from './Slices/geographicalQueriesSlice';
+import geographyReducer, { fetchCities, fetchCountries, fetchStates  } from './Slices/geographicalQueriesSlice';
 
 import GeneralApis  from './RtkQuery/GeneralQueries';
 
@@ -24,7 +24,7 @@ store.dispatch(fetchStates());
 store.dispatch(fetchCities());
 store.dispatch(fetchCategories());
 store.dispatch(fetchSubCategories());
-
+store.dispatch(fetchUser({}))
 
 
 

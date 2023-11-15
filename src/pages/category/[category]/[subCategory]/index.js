@@ -15,8 +15,10 @@ const EventList = dynamic(() => import("@/components/pageSection/EventList"));
 import { RaggTrendingData, RaggCategoryData } from "@/components/json/MusicData";
 import { avatarMoreData } from "@/components/json/AvatarData";
 import { raggEventData } from "@/components/json/EventData";
-import { useGetEventQuery } from "@/Redux/RtkQuery/GeneralQueries";
+import { useGetEventQuery, useGetEventsBySubCategoryQuery } from "@/Redux/RtkQuery/GeneralQueries";
 import { useRouter } from "next/router";
+import { selectAllCategories, selectSubCategoryByName } from "@/Redux/Slices/categoriesSlice";
+import { useSelector } from "react-redux";
 
 // styles
 const Container = styled.section`
@@ -49,6 +51,9 @@ const PerformerContainer = styled.div``;
 export default function RaggaeTicket() {
 	const {data  , isLoading , isSuccess} = useGetEventQuery();
 	const router = useRouter()
+	const category = useSelector(state => selectSubCategoryByName(state, router.query.subCategory ?? ''));
+	const { data: eventsBySubCategory  , isLoading : loadingSubEvents} = useGetEventsBySubCategoryQuery({ subCategoryId: category ? category.id : '' });
+	const allcategories = useSelector(selectAllCategories);
 	return ( 
 		<>
 			<Head>
@@ -59,26 +64,34 @@ export default function RaggaeTicket() {
 			</Head>
 
 			<main>
+			
 				{/* Hero Page */}
-				<PageTicketHero
-					header={router.query.subCategory}
-					description='Popular music, better known as “pop,” traces its roots back to the 1950s in both the United States and the United Kingdom. Most pop songs are known for repetitive, catchy lyrics that are easy to both sing and dance along too.'
+				{
+					!isLoading && category && <PageTicketHero
+					header={category.name}
+					description={category.decription ?? 'no '}
 					image='/images/musicPage/banner/Pop.png'
 				/>
+				}
+				
 
 				{/* Trending Slider */}
-				<TrendingSliderWithoutImage
+				{!loadingSubEvents && <TrendingSliderWithoutImage
 					sliderHeader='Events near American Fork, UT'
-					sliderData={RaggTrendingData}
+					sliderData={eventsBySubCategory.events}
 					sliderRef='musicPopTrendSlider'
 				/>
+				}
+				
 
 				{/* Category Slider */}
-				<ImageSliderNoDetail
-					sliderHeader='Popular Reggae Shows'
-					sliderData={RaggCategoryData}
+				{
+					allcategories && <ImageSliderNoDetail
+					sliderHeader='Categories'
+					sliderData={allcategories}
 					sliderRef='musicPopCategoriesSlider'
 				/>
+				}
 
 				{/* Grid Events and Performer*/}
 				<Container>
@@ -94,7 +107,7 @@ export default function RaggaeTicket() {
 								</Grid>
 								<Grid item xs={12} sm={4} md={4}>
 									<PerformerContainer>
-										<PerformerList sectionHeader='Top Artists' dataList={avatarMoreData} />
+										{/* <PerformerList sectionHeader='Top Artists' dataList={avatarMoreData} /> */}
 									</PerformerContainer>
 								</Grid>
 							</Grid>

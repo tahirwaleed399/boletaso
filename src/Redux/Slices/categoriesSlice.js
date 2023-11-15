@@ -65,5 +65,35 @@ const categoriesSlice = createSlice({
 export default categoriesSlice.reducer;
 
 // Selectors
-export const selectSubCategoriesByCategoryId = (state, categoryId) => 
-  state.categories.subCategories.filter(subCategory => subCategory.category.id === categoryId);
+export const selectSubCategoriesByCategoryId = (state, categoryId) => {
+  console.log({state , categoryId});
+  
+  return state.categories.subCategories.filter(subCategory => subCategory.category.id === categoryId);
+
+}
+// Selector to find a category by name (case-insensitive) only if data is fetched
+export const selectCategoryByName= (state, title) => {
+  if (state.categories.status !== 'succeeded') {
+    // Data has not been successfully fetched, return undefined or appropriate value
+    return {name : 'loading...' , description : 'loading....'};
+  }
+  console.log(state)
+  // Data is fetched, proceed with the title check
+  return state.categories.categories.find(
+    category => category.name.toLowerCase() === title.toLowerCase()
+  );
+};
+export const selectSubCategoryByName= (state, title) => {
+  if (state.categories.status !== 'succeeded') {
+    // Data has not been successfully fetched, return undefined or appropriate value
+    return {name : 'loading...' , description : 'loading....'};
+  }
+  console.log(state)
+  // Data is fetched, proceed with the title check
+  return state.categories.subCategories.find(
+    category => category.name.toLowerCase() === title.toLowerCase()
+  );
+};
+
+export const selectAllCategories = (state) => state.categories.categories;
+export const selectAllSubCategories = (state) => state.categories.subCategories;

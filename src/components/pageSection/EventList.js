@@ -11,6 +11,7 @@ import EventPopup from "../templates/PopUp/EventSeatListPopUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { useSelector } from "react-redux";
 import { selectCityById, selectCountryById, selectStateById } from "@/Redux/Slices/geographicalQueriesSlice";
+import { useGetTicketsByEventQuery } from "@/Redux/RtkQuery/GeneralQueries";
 
 // styles
 const Container = styled.div``;
@@ -193,9 +194,11 @@ const ShowAllButton = styled.button`
 export default function EventList({ sectionHeader, dataList }) {
 	const [showAllList, setShowAllList] = useState(false);
 	const [openEventPopUp, setOpenEventPopUp] = useState(false);
-	const [eventListDetailToForward, setEventListDetailToForward] = useState(null);
 	const [eventListNameToForward, setEventListNameToForward] = useState("");
 	const [eventListDescriptionToForward, setEventListDescriptionToForward] = useState("");
+	const [selectedEvent, setSelectedEvent] = useState(null);
+	
+	const {data : tickets , isLoading : ticketsLoading , isSuccess : ticketsSuccess}  = useGetTicketsByEventQuery(selectedEvent ? selectedEvent.id : '');
 
 	const visibleListItem = showAllList ? dataList : dataList.slice(0, 4);
 
@@ -318,7 +321,7 @@ export default function EventList({ sectionHeader, dataList }) {
 						
 return  (
 						
-	<ListItem item={item} key={item.id} setOpenEventPopUp={setOpenEventPopUp} setEventListDetailToForward={setEventListDetailToForward} setEventListNameToForward={setEventListNameToForward} setEventListDescriptionToForward={setEventListDescriptionToForward}> </ListItem>
+	<ListItem item={item} key={item.id} setOpenEventPopUp={setOpenEventPopUp} setSelectedEvent={setSelectedEvent} setEventListNameToForward={setEventListNameToForward} setEventListDescriptionToForward={setEventListDescriptionToForward}> </ListItem>
 )
 					})}
 				</ListContainer>
@@ -332,19 +335,22 @@ return  (
 				)}
 			</Wrapper>
 
-			<EventPopup
+			{
+				ticketsSuccess && selectedEvent && <EventPopup
 				openPopUp={openEventPopUp}
 				setOpenPopUp={setOpenEventPopUp}
 				eventName={eventListNameToForward}
 				eventDescription={eventListDescriptionToForward}
-				eventListingData={eventListDetailToForward}
+				eventListingData={tickets.tickets}
+				event={selectedEvent}
 			/>
+			}
 		</Container>
 	);
 }
 
 
-function ListItem({item , setOpenEventPopUp , setEventListNameToForward , setEventListDescriptionToForward,setEventListDetailToForward}){
+function ListItem({item , setOpenEventPopUp , setEventListNameToForward , setEventListDescriptionToForward , setSelectedEvent}){
 	const dateObj = new Date(item.date_time);
 
 	const optionsMonth = { month: 'long' };
@@ -378,10 +384,10 @@ function ListItem({item , setOpenEventPopUp , setEventListNameToForward , setEve
 						setOpenEventPopUp(true);
 						setEventListNameToForward(item.eventName);
 						setEventListDescriptionToForward(item.eventLocation);
-						setEventListDetailToForward(item.eventListingData);
+						setSelectedEvent(item)
 					}}
 				>
-					{60}$
+					{12}$
 				</Button>
 			</ButtonBox>
 		</ListBox>

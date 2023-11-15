@@ -143,7 +143,7 @@ const SliderButtonDarkBox = styled.div`
 `;
 
 export default function SliderWithTextAndPrice({ sliderHeader, sliderData, sliderRef }) {
-	
+	console.log(sliderData)
 	// ref
 	const sliderRefDetail = useRef(sliderRef);
 

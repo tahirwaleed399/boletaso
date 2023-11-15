@@ -30,6 +30,30 @@ export const GeneralApis = createApi({
     getTickets: builder.query({
       query: () => `/tickets`,
     }),
+    getTicketsByEvent: builder.query({
+            query: () => `/tickets`,
+            transformResponse: (response, meta, arg) => {
+                // Filter tickets based on event_id
+                return {
+                    ...response,
+                    tickets: response.tickets.filter(ticket => ticket.event_id === arg),
+                };
+            },
+        }),
+    getEventsBySubCategory: builder.query({
+      query: () => `/event`,
+      transformResponse: (response, meta, arg) => ({
+          ...response,
+          events: transformEventsBySubCategory(response, arg.subCategoryId),
+      }),
+  }),
+  getEventsByCategory: builder.query({
+      query: () => `/event`,
+      transformResponse: (response, meta, arg) => ({
+          ...response,
+          events: transformEventsByCategory(response, arg.categoryId),
+      }),
+  }),
    
   }),
 });
@@ -42,8 +66,19 @@ export const {
   useGetEventQuery,
   useGetCountryQuery,
   useGetStateQuery,
+  useGetTicketsByEventQuery,
   useGetCityQuery,
   useGetTicketsQuery,
+  useGetEventsBySubCategoryQuery,
+  useGetEventsByCategoryQuery
 } = GeneralApis;
 
 export default GeneralApis;
+
+const transformEventsBySubCategory = (response, subCategoryId) => {
+  return response.events.filter(event => event.sub_category_id === subCategoryId);
+};
+
+const transformEventsByCategory = (response, categoryId) => {
+  return response.events.filter(event => event.category_id === categoryId);
+};

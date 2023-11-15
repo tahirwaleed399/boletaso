@@ -14,6 +14,8 @@ import EventPaymentPopUp from "./EventPaymentPopUp";
 import MediumHeader from "../textTemplate/MediumHeader";
 import DescriptionMont from "../textTemplate/DescriptionMontDark";
 import MapSvg from "@/components/json/MapSvg";
+import { useSelector } from "react-redux";
+import { selectCityById, selectCountryById, selectStateById } from "@/Redux/Slices/geographicalQueriesSlice";
 
 const Transition = forwardRef(function Transition(props, ref) {
 	return <Slide direction='up' ref={ref} {...props} />;
@@ -471,23 +473,25 @@ const SeatPopUpConditionTextDescription = styled.p`
 	}
 `;
 
-export default function EventDetailPopUp({ openPopUp, setOpenPopUp, eventName, eventDescription, eventListingData }) {
+export default function EventDetailPopUp({ openPopUp, setOpenPopUp, eventName, eventDescription, eventListingData , event }) {
 	const [openSeatDetailPop, setOpenSeatDetailPop] = useState(false);
 	const [seatDetailsToForward, setSeatDetailsToForward] = useState([]);
 	const [eventNamePayment, setEventNamePayment] = useState("");
 	const [eventLocationPayment, setEventLocationPayment] = useState("");
 	const [seatSectionText, setSeatSectionText] = useState("");
 	const [showSeatOverlay, setShowSeatOverlay] = useState(false);
+const state = useSelector((state)=>selectStateById(state , event ? event.state_id : ''))
+const city = useSelector((state)=>selectCityById(state , event ? event.city_id : ''))
+
+const country = useSelector((state)=>selectCountryById(state , event ? event.country_id : ''))
 
 	// filter Data to display on the list
 	console.log(eventListingData);
-	const filterDataToShow = eventListingData?.filter((element) => element.seatSection.includes(seatSectionText));
-	// const filterDataToShow = eventListingData.filter((element) => element.seatSection.includes(seatSection));
-
+	
 	const selectedTickerNumber = [
 		{
 			value: 1,
-			label: "1 Ticket",
+			label: "1 Ticket", 
 		},
 		{
 			value: 2,
@@ -701,11 +705,11 @@ export default function EventDetailPopUp({ openPopUp, setOpenPopUp, eventName, e
 
 												{/* List Map */}
 												<ListingContainer>
-													{filterDataToShow?.length === 0 ? (
+													{eventListingData?.length === 0 ? (
 														<div>No available seats, try Viewing All Seats.</div>
 													) : (
 														<>
-															{filterDataToShow?.map((item, index) => (
+															{state && city && country && eventListingData?.map((item, index) => (
 																<ListWrapper key={index}>
 																	<ListBanner amazingdeal={String(item.amazing)}>{`${
 																		item.amazing ? "Amazing deal" : "Great Deal"
@@ -714,7 +718,7 @@ export default function EventDetailPopUp({ openPopUp, setOpenPopUp, eventName, e
 																		{/* Date Value */}
 																		<ListDateBox>
 																			<ListDateText>
-																				{item.totalTicket}
+																				{item.ticket_qty}
 																			</ListDateText>
 																			<ListDateTextLabel>
 																				Tickets
@@ -722,9 +726,9 @@ export default function EventDetailPopUp({ openPopUp, setOpenPopUp, eventName, e
 																		</ListDateBox>
 																		{/* Event Name and Location */}
 																		<ListTextBox>
-																			<ListTextHeader>{item.name}</ListTextHeader>
+																			<ListTextHeader>{item.ticket_type}</ListTextHeader>
 																			<ListTextLocation>
-																				{item.location}
+																			{country.name} , {state.name} , {city.name}
 																			</ListTextLocation>
 																		</ListTextBox>
 																		{/* Button for the dialog box */}
@@ -740,7 +744,7 @@ export default function EventDetailPopUp({ openPopUp, setOpenPopUp, eventName, e
 																					setShowSeatOverlay(true);
 																				}}
 																			>
-																				$34 each
+																				${item.ticket_price} each
 																			</ListButton>
 																		</ListButtonBox>
 																	</ListBox>

@@ -91,7 +91,7 @@ export default geographicalQueriesSlice.reducer;
 
 // Selectors
 export const selectCountryById = (state, countryId) => {
-  console.log(countryId)
+  console.log(state)
   if(state.geography.status === 'succeeded'){
   return state.geography.countries.find(country => country.id === countryId)
 }else {

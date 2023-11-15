@@ -22,6 +22,7 @@ export const loginUser = createAsyncThunk(
         return thunkAPI.rejectWithValue(data);
       }
       onSuccess()
+      localStorage.setItem('user' , JSON.stringify(data.student))
       return data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
@@ -49,6 +50,21 @@ export const signupUser = createAsyncThunk(
       }
 
       onSuccess();
+      localStorage.setItem('user' , JSON.stringify(data.student))
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+export const fetchUser = createAsyncThunk(
+  'auth/fetchuser',
+  async ({} , thunkAPI) => {
+    try {
+      let data =  JSON.parse(localStorage.getItem('user'));
+      console.log(data)
+      if(!data)   return thunkAPI.rejectWithValue(data);
+   
       return data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
@@ -108,9 +124,27 @@ const authSlice = createSlice({
 
       })
       .addCase(signupUser.rejected, (state, action) => {
-        toast.error('Signup failed')
+        
         state.isLoading = false;
         state.error = action.payload;
+        state.user = null;
+      })
+      .addCase(fetchUser.pending, (state) => {
+        state.isLoading = true;
+        
+        
+      })
+      .addCase(fetchUser.fulfilled, (state, action) => {
+       
+        state.isLoading = false;
+        state.user = action.payload;
+        state.error = null;
+
+      })
+      .addCase(fetchUser.rejected, (state, action) => {
+     
+        state.isLoading = false;
+        state.error = 'no user';
         state.user = null;
       });
   },

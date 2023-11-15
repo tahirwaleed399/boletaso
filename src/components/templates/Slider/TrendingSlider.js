@@ -12,6 +12,8 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 // component
 import Header from "../SliderHeader";
+import { selectCityById, selectCountryById, selectStateById } from "@/Redux/Slices/geographicalQueriesSlice";
+import { useSelector } from "react-redux";
 
 // styles
 const Container = styled.section`
@@ -204,13 +206,14 @@ const SliderButtonDarkBox = styled.div`
 `;
 
 export default function SliderWithTextAndPrice({ sliderHeader, sliderData, sliderRef }) {
+	console.log(sliderData)
 	// ref
 	const sliderRefDetail = useRef(sliderRef);
 
 	var settings = {
 		dots: true,
 		arrows: false,
-		infinite: true,
+		infinite: false,
 		speed: 500,
 		slidesToShow: 3,
 		slidesToScroll: 1,
@@ -253,38 +256,7 @@ export default function SliderWithTextAndPrice({ sliderHeader, sliderData, slide
 				<SliderContainer>
 					<Slider {...settings} ref={sliderRefDetail}>
 						{sliderData.map((item, index) => (
-							<SliderWrapper key={index}>
-								<SliderBox>
-									<SliderImageBox>
-										<SliderImageNumberBox>{`#${index + 1}`}</SliderImageNumberBox>
-										<SliderImage
-											src={item.image}
-											alt={item.title}
-											height='auto'
-											width='auto'
-											loading='lazy'
-										/>
-									</SliderImageBox>
-									<SliderTextBox>
-										<SliderTextSplitBox>
-											<SliderTitle>{item.title}</SliderTitle>
-											{/* <SliderPrice>{item.price}</SliderPrice> */}
-											<SliderDetails>{item.time}</SliderDetails>
-											<SliderDetails>{item.location}</SliderDetails>
-										</SliderTextSplitBox>
-
-										<PriceBox>
-											<SliderPrice>{item.price}</SliderPrice>
-											<ChevronRightIcon
-												sx={{
-													color: "#fff",
-													fontSize: { xs: "1.8rem", sm: "1.2rem", md: "1.8rem" },
-												}}
-											/>
-										</PriceBox>
-									</SliderTextBox>
-								</SliderBox>
-							</SliderWrapper>
+							<SlideItem item={item} key={index} index={index}></SlideItem>
 						))}
 					</Slider>
 				</SliderContainer>
@@ -319,4 +291,54 @@ export default function SliderWithTextAndPrice({ sliderHeader, sliderData, slide
 			</Wrapper>
 		</Container>
 	);
+}
+
+
+function SlideItem({item , index}){
+	
+	let country =  useSelector((state)=>selectCountryById(state , item.country_id));
+	let state =  useSelector((state)=>selectStateById(state,item.state_id));
+
+	let city =  useSelector((state)=>selectCityById(state,item.city_id));
+
+
+	return (<SliderWrapper >
+		<SliderBox>
+			<SliderImageBox>
+				<SliderImageNumberBox>{`#${index + 1}`}</SliderImageNumberBox>
+				<SliderImage
+					src={item.image_1}
+					alt={item.description}
+					height='auto'
+					width='auto'
+					loading='lazy'
+				/>
+			</SliderImageBox>
+			<SliderTextBox>
+				<SliderTextSplitBox>
+					<SliderTitle>{item.description}</SliderTitle>
+					{/* <SliderPrice>{item.price}</SliderPrice> */}
+					<SliderDetails>{(new Date(item.date_time)).toLocaleString('en-US', {
+month: 'long', // "November"
+day: '2-digit', // "24"
+year: 'numeric', // "2023"
+hour: '2-digit', // "08"
+minute: '2-digit', // "10"
+hour12: true // AM/PM format
+})}</SliderDetails>
+					<SliderDetails>{country.name} , {state.name} ,  {city.name}</SliderDetails>
+				</SliderTextSplitBox>
+
+				<PriceBox>
+					<SliderPrice>12$</SliderPrice>
+					<ChevronRightIcon
+						sx={{
+							color: "#fff",
+							fontSize: { xs: "1.8rem", sm: "1.2rem", md: "1.8rem" },
+						}}
+					/>
+				</PriceBox>
+			</SliderTextBox>
+		</SliderBox>
+	</SliderWrapper>)
 }
