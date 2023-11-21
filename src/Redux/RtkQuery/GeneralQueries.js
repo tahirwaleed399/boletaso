@@ -13,7 +13,7 @@ export const GeneralApis = createApi({
       query: () => `/sub_categories`,
     }),
     getStadium: builder.query({
-      query: () => `/stadium`,
+      query: () => `/staduim`,
     }),
     getEvent: builder.query({
       query: () => `/event`,
@@ -40,6 +40,14 @@ export const GeneralApis = createApi({
                 };
             },
         }),
+        getStadiumById: builder.query({
+          query: () => `/staduim`, // Fetching the entire list of stadiums
+          transformResponse: (response, meta, arg) => {
+              // Assuming the response is an array of stadiums
+              // Filter the array to find the stadium with the given ID
+              return response.staduim.find(stadium => stadium.id === arg);
+          },
+      }),
     getEventsBySubCategory: builder.query({
       query: () => `/event`,
       transformResponse: (response, meta, arg) => ({
@@ -70,7 +78,8 @@ export const {
   useGetCityQuery,
   useGetTicketsQuery,
   useGetEventsBySubCategoryQuery,
-  useGetEventsByCategoryQuery
+  useGetEventsByCategoryQuery,
+  useGetStadiumByIdQuery
 } = GeneralApis;
 
 export default GeneralApis;

@@ -214,11 +214,9 @@ const ConditionTextDescription = styled.p`
 //
 const MapSVGContainer = styled.div``;
 
-export default function EventSeatDetailPopUp({ openPopUp, setOpenPopUp, seatDetail }) {
+export default function EventSeatDetailPopUp({ openPopUp, setOpenPopUp, seatDetail ,setOpenBillingPopUp, openBillingPopUp , event }) {
 	const [seatSectionText, setSeatSectionText] = useState("");
 	const [numberOfTicket, setNumberOfTicket] = useState(1);
-	const [openBillingPopUp, setOpenBillingPopUp] = useState(false);
-
 	const handleClickOpen = () => {
 		setOpenPopUp(true);
 	};

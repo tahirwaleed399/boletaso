@@ -66,6 +66,7 @@ export default function Home() {
 				{/* Category Slider */}
 				{subCategories && <CategorySlider
 					sliderHeader='Sub Categories'
+					cat={true}
 					sliderData={subCategories}
 					sliderRef='musicCategoriesSlider'
 				/>}

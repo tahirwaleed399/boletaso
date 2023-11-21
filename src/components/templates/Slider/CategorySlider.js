@@ -11,6 +11,7 @@ import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
 
 // component
 import Header from "../SliderHeader";
+import { useRouter } from "next/router";
 
 // styles
 const Container = styled.section`
@@ -142,11 +143,11 @@ const SliderButtonDarkBox = styled.div`
 	z-index: 1;
 `;
 
-export default function SliderWithTextAndPrice({ sliderHeader, sliderData, sliderRef }) {
+export default function SliderWithTextAndPrice({ sliderHeader, sliderData, sliderRef , subCat }) {
 	console.log(sliderData)
 	// ref
 	const sliderRefDetail = useRef(sliderRef);
-
+const router = useRouter()
 	var settings = {
 		dots: true,
 		infinite: false,
@@ -191,7 +192,7 @@ export default function SliderWithTextAndPrice({ sliderHeader, sliderData, slide
 				<SliderContainer>
 					<Slider {...settings} ref={sliderRefDetail}>
 						{sliderData.map((item, index) => (
-							<SliderWrapper key={item.id}>
+							<SliderWrapper key={item.id} onClick={()=>{router.push(`category/${item.name}`)}}>
 								<SliderBox>
 									<SliderImageBox>
 										<SliderImage

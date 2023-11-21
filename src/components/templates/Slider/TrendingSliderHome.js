@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 
 import Slider from "react-slick";
@@ -10,12 +10,14 @@ import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
 import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
+import EventPopup from "../../templates/PopUp/EventSeatListPopUp";
 
 
 // component
 import Header from "../SliderHeader";
 import { useSelector } from "react-redux";
 import { selectCityById, selectCountryById, selectStateById } from "@/Redux/Slices/geographicalQueriesSlice";
+import { useGetTicketsByEventQuery } from "@/Redux/RtkQuery/GeneralQueries";
 
 // styles
 const Container = styled.section`
@@ -211,7 +213,15 @@ const SliderButtonDarkBox = styled.div`
 `;
 
 export default function SliderWithTextAndPrice({ sliderData }) {
-	console.log(sliderData)
+	const [showAllList, setShowAllList] = useState(false);
+	const [openEventPopUp, setOpenEventPopUp] = useState(false);
+	const [eventListNameToForward, setEventListNameToForward] = useState("");
+	const [eventListDescriptionToForward, setEventListDescriptionToForward] = useState("");
+	const [selectedEvent, setSelectedEvent] = useState(null);
+
+	const {data : tickets , isLoading : ticketsLoading , isSuccess : ticketsSuccess}  = useGetTicketsByEventQuery(selectedEvent ? selectedEvent.id : '');
+	
+
 	// ref
 	const sliderRefDetail = useRef(null);
 
@@ -262,9 +272,24 @@ export default function SliderWithTextAndPrice({ sliderData }) {
 				<SliderContainer>
 					<Slider {...settings} ref={sliderRefDetail}>
 						{sliderData.map((item, index) => (
-							<SliderItem key={index} item={item}></SliderItem>
+						<div key={index} onClick={() => {
+							setOpenEventPopUp(true);
+							setEventListNameToForward(item.eventName);
+							setEventListDescriptionToForward(item.eventLocation);
+							setSelectedEvent(item)
+						}} ><SliderItem item={item}></SliderItem></div>
 						))}
 					</Slider>
+					{
+				ticketsSuccess && selectedEvent && <EventPopup
+				openPopUp={openEventPopUp}
+				setOpenPopUp={setOpenEventPopUp}
+				eventName={eventListNameToForward}
+				eventDescription={eventListDescriptionToForward}
+				eventListingData={tickets.tickets}
+				event={selectedEvent}
+			/>
+			}
 				</SliderContainer>
 
 				<SliderButtonContainer>

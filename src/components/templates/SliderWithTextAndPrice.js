@@ -1,9 +1,11 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+
+import EventPopup from "../templates/PopUp/EventSeatListPopUp";
 
 // icon
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
@@ -11,6 +13,7 @@ import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
 
 // component
 import Header from "./SliderHeader";
+import { useGetTicketsByEventQuery } from "@/Redux/RtkQuery/GeneralQueries";
 
 // styles
 const Container = styled.section`
@@ -172,6 +175,15 @@ const SliderButtonDarkBox = styled.div`
 
 export default function SliderWithTextAndPrice({ idTag, sliderHeader, sliderData, sliderRef }) {
 	// ref
+	const [showAllList, setShowAllList] = useState(false);
+	const [openEventPopUp, setOpenEventPopUp] = useState(false);
+	const [eventListNameToForward, setEventListNameToForward] = useState("");
+	const [eventListDescriptionToForward, setEventListDescriptionToForward] = useState("");
+	const [selectedEvent, setSelectedEvent] = useState(null);
+
+	const {data : tickets , isLoading : ticketsLoading , isSuccess : ticketsSuccess}  = useGetTicketsByEventQuery(selectedEvent ? selectedEvent.id : '');
+	
+
 	const sliderRefDetail = useRef(sliderRef);
 
 	// slider settings
@@ -219,7 +231,12 @@ export default function SliderWithTextAndPrice({ idTag, sliderHeader, sliderData
 				<SliderContainer>
 					<Slider {...settings} ref={sliderRefDetail}>
 						{sliderData.map((item, index) => (
-							<SliderWrapper key={index}>
+							<SliderWrapper key={index} onClick={() => {
+								setOpenEventPopUp(true);
+								setEventListNameToForward(item.eventName);
+								setEventListDescriptionToForward(item.eventLocation);
+								setSelectedEvent(item)
+							}}>
 								<SliderBox>
 									<SliderImageBox>
 										<SliderImage
@@ -241,6 +258,16 @@ export default function SliderWithTextAndPrice({ idTag, sliderHeader, sliderData
 							</SliderWrapper>
 						))}
 					</Slider>
+					{
+				ticketsSuccess && selectedEvent && <EventPopup
+				openPopUp={openEventPopUp}
+				setOpenPopUp={setOpenEventPopUp}
+				eventName={eventListNameToForward}
+				eventDescription={eventListDescriptionToForward}
+				eventListingData={tickets.tickets}
+				event={selectedEvent}
+			/>
+			}
 				</SliderContainer>
 
 				<SliderButtonContainer>

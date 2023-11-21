@@ -16,6 +16,8 @@ import DescriptionMont from "../textTemplate/DescriptionMontDark";
 import MapSvg from "@/components/json/MapSvg";
 import { useSelector } from "react-redux";
 import { selectCityById, selectCountryById, selectStateById } from "@/Redux/Slices/geographicalQueriesSlice";
+import { useGetStadiumByIdQuery } from "@/Redux/RtkQuery/GeneralQueries";
+import Image from "next/image";
 
 const Transition = forwardRef(function Transition(props, ref) {
 	return <Slide direction='up' ref={ref} {...props} />;
@@ -472,6 +474,11 @@ const SeatPopUpConditionTextDescription = styled.p`
 		font-size: 0.8rem;
 	}
 `;
+const SliderImage = styled.img`
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+`;
 
 export default function EventDetailPopUp({ openPopUp, setOpenPopUp, eventName, eventDescription, eventListingData , event }) {
 	const [openSeatDetailPop, setOpenSeatDetailPop] = useState(false);
@@ -479,15 +486,14 @@ export default function EventDetailPopUp({ openPopUp, setOpenPopUp, eventName, e
 	const [eventNamePayment, setEventNamePayment] = useState("");
 	const [eventLocationPayment, setEventLocationPayment] = useState("");
 	const [seatSectionText, setSeatSectionText] = useState("");
+	const [openBillingPopUp, setOpenBillingPopUp] = useState(false);
 	const [showSeatOverlay, setShowSeatOverlay] = useState(false);
 const state = useSelector((state)=>selectStateById(state , event ? event.state_id : ''))
 const city = useSelector((state)=>selectCityById(state , event ? event.city_id : ''))
 
 const country = useSelector((state)=>selectCountryById(state , event ? event.country_id : ''))
-
-	// filter Data to display on the list
-	console.log(eventListingData);
-	
+const {data , isLoading , isSuccess : isStadiumSuccess}= useGetStadiumByIdQuery(event.staduim_id)
+	const [selectedTicket  , setSelectedTicket ] = useState(null);
 	const selectedTickerNumber = [
 		{
 			value: 1,
@@ -581,9 +587,20 @@ const country = useSelector((state)=>selectCountryById(state , event ? event.cou
 						<Grid container direction='row-reverse'>
 							{/* Map */}
 							<Grid item xs={12} sm={6} md={7}>
-								<MapSVGContainer>
-									<MapSvg setSeatSectionText={setSeatSectionText} />
-								</MapSVGContainer>
+								
+								{
+									isStadiumSuccess && (
+
+										<SliderImage src={data.image_1.replace('127.0.0.1:8000' , 'boletaso.sehatpk.com')} height='auto'
+										width='auto'
+										loading='lazy'></SliderImage>
+									)
+								}
+								
+{/* 							
+								 <MapSVGContainer>
+								
+								</MapSVGContainer>  */}
 							</Grid>
 
 							{/* Seat List  */}
@@ -742,6 +759,7 @@ const country = useSelector((state)=>selectCountryById(state , event ? event.cou
 																						item.location
 																					);
 																					setShowSeatOverlay(true);
+																					setSelectedTicket(item)
 																				}}
 																			>
 																				${item.ticket_price} each
@@ -785,6 +803,7 @@ const country = useSelector((state)=>selectCountryById(state , event ? event.cou
 									<>
 										{showSeatOverlay && (
 											<SeatPopUpContainer>
+											
 												{/* Image */}
 												<SeatPopUpImageBox>
 													{/* Acton Button Besides header */}
@@ -860,7 +879,7 @@ const country = useSelector((state)=>selectCountryById(state , event ? event.cou
 														</SeatPopUpHeaderTextBox>
 														{/* Price */}
 														<SeatPopUpDescriptionBox>
-															<SeatPopUpDescriptionText>{`$${seatDetailsToForward.price} each`}</SeatPopUpDescriptionText>
+															<SeatPopUpDescriptionText>{`$${selectedTicket.ticket_price} each`}</SeatPopUpDescriptionText>
 														</SeatPopUpDescriptionBox>
 													</SeatPopUpHeaderWrapper>
 
@@ -954,6 +973,11 @@ const country = useSelector((state)=>selectCountryById(state , event ? event.cou
 					openPopUp={openSeatDetailPop}
 					setOpenPopUp={setOpenSeatDetailPop}
 					seatDetail={seatDetailsToForward}
+					setOpenBillingPopUp={setOpenBillingPopUp}
+					openBillingPopUp={openBillingPopUp} 
+					event={
+						event
+					}
 				/>
 			</Dialog>
 		</>

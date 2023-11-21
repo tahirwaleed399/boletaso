@@ -89,6 +89,7 @@ export default function RaggaeTicket() {
 					allcategories && <ImageSliderNoDetail
 					sliderHeader='Categories'
 					sliderData={allcategories}
+					cat={true}
 					sliderRef='musicPopCategoriesSlider'
 				/>
 				}

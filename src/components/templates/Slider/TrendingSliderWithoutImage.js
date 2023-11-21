@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 
 import Slider from "react-slick";
@@ -9,11 +9,13 @@ import "slick-carousel/slick/slick-theme.css";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
 import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import EventPopup from "../../templates/PopUp/EventSeatListPopUp";
 
 // component
 import Header from "../SliderHeader";
 import { selectCityById, selectCountryById, selectStateById } from "@/Redux/Slices/geographicalQueriesSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { useGetTicketsByEventQuery } from "@/Redux/RtkQuery/GeneralQueries";
 
 // styles
 const Container = styled.section`
@@ -200,7 +202,15 @@ const SliderButtonDarkBox = styled.div`
 `;
 
 export default function TrendingSliderWithoutImage({ sliderHeader, sliderData,sliderRef }) {
-	console.log(sliderData)
+	const [showAllList, setShowAllList] = useState(false);
+	const [openEventPopUp, setOpenEventPopUp] = useState(false);
+	const [eventListNameToForward, setEventListNameToForward] = useState("");
+	const [eventListDescriptionToForward, setEventListDescriptionToForward] = useState("");
+	const [selectedEvent, setSelectedEvent] = useState(null);
+
+	const {data : tickets , isLoading : ticketsLoading , isSuccess : ticketsSuccess}  = useGetTicketsByEventQuery(selectedEvent ? selectedEvent.id : '');
+	
+
 	// ref
 	const sliderRefDetail = useRef(sliderRef);
 
@@ -249,9 +259,25 @@ export default function TrendingSliderWithoutImage({ sliderHeader, sliderData,sl
 				<SliderContainer>
 					<Slider {...settings} ref={sliderRefDetail}>
 						{sliderData.map((item, index) => (
-							<SlideItem key={index} item={item}></SlideItem>
+							<div key={index} onClick={() => {
+								setOpenEventPopUp(true);
+								setEventListNameToForward(item.eventName);
+								setEventListDescriptionToForward(item.eventLocation);
+								setSelectedEvent(item)
+							}} ><SlideItem item={item}></SlideItem></div>
 						))}
 					</Slider>
+					
+			{
+				ticketsSuccess && selectedEvent && <EventPopup
+				openPopUp={openEventPopUp}
+				setOpenPopUp={setOpenEventPopUp}
+				eventName={eventListNameToForward}
+				eventDescription={eventListDescriptionToForward}
+				eventListingData={tickets.tickets}
+				event={selectedEvent}
+			/>
+			}
 				</SliderContainer>
 
 				<SliderButtonContainer>
