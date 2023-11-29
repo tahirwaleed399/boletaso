@@ -397,7 +397,7 @@ console.log({navbarItems , moreItems})
                 letterSpacing: ".5px",
               }}
             >
-              {Object.keys(navbarItems[idx])[0]}
+            {navbarItems[idx] && Object.keys(navbarItems[idx])[0]}
               <ArrowDropDownIcon sx={{ fontSize: "1.2rem" }} />
             </Button>
           </Link>
